@@ -1,0 +1,289 @@
+/* Format body */
+body {
+  padding-top: 15px;
+  font: 14px "Roboto", Helvetica, Arial, sans-serif;
+  font-weight:200;
+  background-color: #fafafa !important;
+  margin:0px;
+}
+
+/* Format links */
+a {
+  color: #2196f3;
+  text-decoration: none;
+}
+a:visited, a:focus {
+    text-decoration: none;
+    color: #2196f3;
+}
+a:hover {
+    text-decoration: none;
+    color: #87ceeb;
+}
+
+/* Format buttons at bottom of each post */
+.post-buttons ul {
+    list-style-type: none;
+}
+.post-buttons li {
+    display: inline;
+    padding: 3px;
+    color: #ccc;
+    font-size: 18px;
+}
+
+/* coloring flags and hover over */
+.glyphicon.glyphicon-flag {
+  /*color: #bbbbbb !important;*/
+  font-size: 20px;
+}
+.glyphicon.glyphicon-flag:hover{
+   transition: opacity .2s ease-in-out;
+  -moz-transition: opacity .2s ease-in-out;
+  -webkit-transition: opacity .2s ease-in-out;
+  opacity:0.8;
+   cursor: pointer;
+}
+
+/* coloring hearts and hover over */
+.glyphicon.glyphicon-heart {
+  /*color: #bbbbbb !important;*/
+  font-size: 20px;
+}
+.glyphicon.glyphicon-heart:hover {
+  transition: opacity .2s ease-in-out;
+  -moz-transition: opacity .2s ease-in-out;
+  -webkit-transition: opacity .2s ease-in-out;
+  opacity:0.8;
+  cursor: pointer;
+  color: #fd7b7b;
+}
+
+/* coloring hearts and hover over */
+.glyphicon.glyphicon-search {
+  /*color: #bbbbbb !important;*/
+  font-size: 20px;
+}
+.glyphicon.glyphicon-search:hover {
+  transition: opacity .2s ease-in-out;
+  -moz-transition: opacity .2s ease-in-out;
+  -webkit-transition: opacity .2s ease-in-out;
+  opacity:0.8;
+  cursor: pointer;
+  color: #fd7b7b;
+}
+
+/* coloring flags and hover over */
+.glyphicon.glyphicon-trash {
+  /*color: #bbbbbb !important;*/
+  font-size: 20px;
+}
+.glyphicon.glyphicon-trash:hover{
+   transition: opacity .2s ease-in-out;
+  -moz-transition: opacity .2s ease-in-out;
+  -webkit-transition: opacity .2s ease-in-out;
+  opacity:0.8;
+   cursor: pointer;
+}
+
+/* coloring hearts and hover over */
+.glyphicon.glyphicon-ok-circle {
+  /*color: #bbbbbb !important;*/
+  font-size: 20px;
+}
+.glyphicon.glyphicon-ok-circle:hover {
+  transition: opacity .2s ease-in-out;
+  -moz-transition: opacity .2s ease-in-out;
+  -webkit-transition: opacity .2s ease-in-out;
+  opacity:0.8;
+  cursor: pointer;
+  color: #fd7b7b;
+}
+/* coloring hearts and hover over */
+.glyphicon.glyphicon-remove-circle {
+  /*color: #bbbbbb !important;*/
+  font-size: 20px;
+}
+.glyphicon.glyphicon-remove-circle:hover {
+  transition: opacity .2s ease-in-out;
+  -moz-transition: opacity .2s ease-in-out;
+  -webkit-transition: opacity .2s ease-in-out;
+  opacity:0.8;
+  cursor: pointer;
+  color: #fd7b7b;
+}
+
+/* post formatting */
+.post{
+  border-style: solid;
+  border-color: #ddd !important;
+  margin: 0px auto 15px;
+}
+.post:hover{
+  transition-duration: 0.4s;
+  border-color: #79C5FF !important;
+}
+
+.w3-border-inactive {
+  border-color: #ddd !important;
+}
+.w3-button:hover {
+  background-color:#ddd !important;
+}
+.w3-button:focus {
+  background-color:#ddd !important;
+}
+
+/* mood side bar */
+#moodSidebar {
+    padding-left:15px;
+    padding-right:15px;
+    width:350px;
+    right:0;
+}
+#mainContent {
+    margin-right:350px;
+}
+
+/* chart colors */
+.ct-series-a .ct-bar, .ct-series-a .ct-line, .ct-series-a .ct-point, .ct-series-a .ct-slice-donut {
+    stroke: #ffeb3b;
+}
+.ct-series-b .ct-bar, .ct-series-b .ct-line, .ct-series-b .ct-point, .ct-series-b .ct-slice-donut {
+    stroke: #2196f3;
+}
+.ct-series-c .ct-bar, .ct-series-c .ct-line, .ct-series-c .ct-point, .ct-series-c .ct-slice-donut {
+    stroke: #f44336;
+}
+
+/* chart tooltip */
+.tooltip {
+    position: absolute;
+    display: inline-block;
+    min-width: 5em;
+    padding: 8px 10px;
+    background: #bbbbbb;
+    color: #000000;
+    text-align: center;
+    pointer-events: none;
+    z-index: 100;
+    transition: opacity .2s linear;
+}
+/* chart tooltip arrow */
+.tooltip:before {
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    border: solid transparent;
+    content: ' ';
+    height: 0;
+    width: 0;
+    pointer-events: none;
+    border-color: rgba(251, 249, 228, 0);
+    border-top-color: #bbbbbb;
+    border-width: 7px;
+    margin-left: -8px;
+}
+&.hide {
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* post title */
+.post-title {
+    font-size:20px;
+    /*margin-left:10px;*/
+    color:#666666;
+}
+.post-body {
+    font-size:15px;
+    /*margin-left:10px;*/
+}
+
+.comment{
+  border-style: solid;
+  border-color: #ddd !important;
+  margin: 0px auto 15px;
+  font-size:18px;
+  border-left-color: #2196f3 !important;
+  border-left-width: 15px !important;
+}
+.comment-body{
+  color: #666666 !important;
+}
+
+.title {
+    font-size:25px;
+}
+
+/* to top of page button*/
+#toTop {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed/sticky position */
+    bottom: 10px; /* Place the button at the bottom of the page */
+    left: 10px; /* Place the button px from left */
+    z-index: 99; /* Make sure it does not overlap */
+    border: none; /* Remove borders */
+    outline: none; /* Remove outline */
+    background-color: #bbbbbb; /* Set a background color */
+    color: white; /* Text color */
+    cursor: pointer; /* Add a mouse pointer on hover */
+    padding: 10px; /* Some padding */
+}
+
+#toTop:hover {
+    background-color: #555; /* Add a dark-grey background on hover */
+}
+
+/* Remove rounding from +1 in registration phone number add-on  and other inputs */
+.input-group-addon {
+    border-radius:0px;
+}
+.input:focus {
+    height:33px;
+    resize: none;
+}
+.input{
+    width:99%;
+    height:33px;
+    resize: none;
+    border-radius:0px;
+}
+.input-group-btn {
+    border-radius:0px;
+}
+.btn-secondary {
+    border-radius:0px;
+}
+.btn-default {
+    border-radius: 0px;
+}
+.form-control {
+    border-radius: 0px;
+}
+.input-group {
+    border-radius: 0px;
+}
+
+/* Images for posts */
+.user-images {
+  max-height:35%;
+  max-width:35%;
+  cursor:pointer;
+}
+.user-images-expanded {
+    max-height: 80vh;
+    max-width: 80%;
+    width:auto;
+    height:auto;
+}
+
+.sidebar-header {
+  font-weight:bold;
+  font-size:15px;
+  color:#666666;
+  margin-bottom:10px;
+}
+
+/* add more custom styling here with comments */

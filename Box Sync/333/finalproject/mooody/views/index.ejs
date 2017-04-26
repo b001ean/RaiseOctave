@@ -1,0 +1,602 @@
+<!--<!DOCTYPE html>--> <!-- NOTE: added to resolve infinite-scroll mousing issue -->
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>mooody</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="/stylesheets/twemoji-awesome.css" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="stylesheet" href="/stylesheets/angular-spinkit.min.css">
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <link rel="stylesheet" href="/stylesheets/chartist-plugin-tooltip.css"></link>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-2.2.4.js"
+    integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+    crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.2/angular-ui-router.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
+    <script src="/javascripts/angular-spinkit.min.js"></script>
+    <script src="/javascripts/angularApp.js"></script>
+    <script src="/javascripts/sidebar.js"></script>
+    <script src="/javascripts/misc.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.scrollto/2.1.2/jquery.scrollTo.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <script src="/javascripts/chartist-plugin-fill-donut.js"></script>
+    <script src="/javascripts/chartist-plugin-tooltip.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.js"
+    integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+    crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link href="/stylesheets/style.css" rel="stylesheet">
+</head>
+
+<!-- Body start ************************************************************-->
+
+<body ng-app="mooody">
+
+    <!-- Loading transition -->
+    <div ng-show="isStateLoading" class="w3-container loading-indicator">
+        <div class="loading-indicator-body w3-display-middle">
+            <!--<p class="post-title w3-center">Loading...</p>-->
+            <div class="spinner w3-display-middle"><double-bounce-spinner></double-bounce-spinner></div>
+        </div>
+    </div>
+
+<div id="main-cont">
+
+<!-- Navbar and sidebar ****************************************************-->
+    <div class="w3-top" style="z-index:3;">
+        <div class="w3-bar w3-white w3-large w3-border" ng-controller="NavCtrl">
+                  <a class="w3-bar-item" href="#" style="text-decoration: none;">m<i class="twa twa-smile"></i><i class="twa twa-cry"></i><i class="twa twa-triumph"></i>dy</a>
+                  <a class="w3-bar-item w3-button w3-text-blue" onclick="document.getElementById('about').style.display='block'">About</a>
+                  <a class="w3-bar-item w3-button" ng-show="isLoggedIn()" href="" ng-click="logOut()">Log Out</a>
+                  <a class="w3-bar-item w3-button" ng-hide="isLoggedIn()" href="/#/login">Log In | Register</a>
+        </div>
+    </div>
+
+    <!-- About popup (modal) -->
+    <div id="about" class="w3-modal" onclick="this.style.display='none'">
+        <div class="w3-modal-content">
+            <header class="w3-container">
+            <span onclick="document.getElementById('about').style.display='none'"
+            class="w3-button w3-display-topright">&times;</span>
+            </header>
+            <div class="w3-container w3-padding-16">
+                <p class="post-body">Mooody is a COS 333 project by Xiao Yang Yu, Lindy Zeng, Katelyn Neese, and Jesse Chou.
+                    The team is advised by Nick Giannarakis. Visit our project site <a href="https://mooody-princeton.github.io/">here</a>.</p>
+                <br>
+                <p class="post-body"><span class="w3-tag w3-blue">DISCLAIMER</span> This web application is not intended to be used to diagnose
+                    or treat any mental illness or medical condition. For diagnoses or treatment of any such condition, consult a medical
+                    professional. All information on the web application are the responsibility of the individuals who posted it, and do not
+                    necessarily reflect the views of the web application developers.</p>
+            </div>
+        </div>
+    </div>
+
+<!-- Display the rest of the page -->
+    <div class="ng-cloak w3-row-padding w3-padding-32">
+
+      <!-- Go To Top Button -->
+      <button onclick="topFunction()" id="toTop" title="Go to top"><i class="glyphicon glyphicon-chevron-up"></i></button>
+
+        <!-- Sidebar -->
+        <div style="overflow:scroll;z-index:2;" class="w3-sidebar w3-bar w3-center w3-white w3-collapse w3-border" ng-controller="SidebarCtrl" id="moodSidebar">
+                <button class="w3-bar-item w3-button w3-hide-large" onclick="w3_close()">Close &times;</button>
+                <div class="w3-padding-32">
+                    <!-- Greetings -->
+                    <div ng-show="isLoggedIn()">
+                        <span class="post-title">Hi, {{currentUser()}}!</span>
+                    </div>
+                    <!-- Status -->
+                    <div ng-show="isLoggedIn()" class="w3-padding-small post-title" align="left">
+
+                        <span class="sidebar-header" align="left">Status (max 150 char.):</span>
+                        <div ng-if="currentStatusSaved" style="margin-top:10px;" class="input-group">
+                        <input type="text" ng-model="currentStatus" maxlength="150" class="form-control w3-white" readonly>
+                        <span class="input-group-btn">
+
+                            <button ng-click="flipStatus()" style="height:34px;font-size:15px;" class="btn btn-default" type="button">Edit</button>
+                        </span>
+                        </div>
+                        <div ng-if="!currentStatusSaved" style="margin-top:10px;" class="input-group">
+                        <input type="text" ng-model="copyStatus" maxlength="150" class="form-control w3-pale-yellow">
+                        <span class="input-group-btn">
+
+                            <button ng-click="saveStatus()" style="height:34px;" class="btn btn-default" type="button">Save</button>
+                        </span>
+                        </div>
+                        <hr>
+                    </div>
+                    <!-- Social mood -->
+                    <div align="left">
+                        <span class="w3-padding-small sidebar-header">Princeton's Mood:</span>
+                    </div>
+                    <div class="ct-chart ct-minor-second" id="chart"></div>
+                    <!-- User mood -->
+                    <div ng-show="isLoggedIn()">
+                        <hr>
+                        <div class="w3-padding-small sidebar-header" align="left"><span>Update your mood:</span></div>
+                        <div class="w3-bar w3-xlarge">
+                            <a ng-show="checkMood('happy')" class="w3-bar-item w3-button w3-gray" ng-click="setMoodTo('happy')"><i class="twa twa-smile"></i></a>
+                            <a ng-hide="checkMood('happy')" class="w3-bar-item w3-button" ng-click="setMoodTo('happy')"><i class="twa twa-smile"></i></a>
+                            <a ng-show="checkMood('sad')" class="w3-bar-item w3-button w3-gray" ng-click="setMoodTo('sad')"><i class="twa twa-cry"></i></a>
+                            <a ng-hide="checkMood('sad')" class="w3-bar-item w3-button" ng-click="setMoodTo('sad')"><i class="twa twa-cry"></i></a>
+                            <a ng-show="checkMood('angry')" class="w3-bar-item w3-button w3-gray" ng-click="setMoodTo('angry')"><i class="twa twa-triumph"></i></a>
+                            <a ng-hide="checkMood('angry')" class="w3-bar-item w3-button" ng-click="setMoodTo('angry')"><i class="twa twa-triumph"></i></a>
+                        </div>
+                        <div class="w3-padding-32" style="padding-top:20px !important;padding-bottom:5px !important;">
+                            <button class="w3-button w3-blue" ng-click="helpRandomUser()"><span style="font-size:15px;" text-align="center" class="glyphicon glyphicon-heart"></span> Help someone feel better</button>
+                        </div>
+                        <div class="w3-padding-32" style="padding-top:5px !important;">
+                            <a href="/#/mymessages/{{currentUserId()}}"><button class="w3-button w3-blue"><span class="glyphicon glyphicon-envelope"></span> View Messages</button></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Help someone feel better popup -->
+                <div id="helpsomeone" class="w3-modal">
+                    <div class="w3-modal-content">
+                        <header class="w3-container">
+                            <span onclick="document.getElementById('helpsomeone').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                        </header>
+
+                        <div class="w3-container w3-padding-16">
+
+                            Help someone feel better!<br>
+                            We've randomly selected a user who isn't feeling too well. A few words of support could be just the little act of kindness to make a difference. Please only use this feature for support and encouragement.<br><br><hr>
+                            <div ng-show='showbox'>
+                                Anonymous user's mood: {{selectedMood}}<br>
+                                Anoynymous user's status: {{selectedStatus}}<br><br>
+                                Leave a little note:<br>
+                                <div class="w3-container w3-padding-32">
+                                    <form class="w3-container w3-padding-16" ng-submit="sendNote(selectedUserId)">
+                                        <div class="w3-mobile">
+                                            <textarea class="w3-input w3-border" ng-model="note" placeholder="A little note..." required></textarea>
+                                        </div>
+                                        <div class="w3-mobile">
+                                            <button type="submit" class="w3-button w3-blue w3-border w3-border-blue w3-block">Send</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <hr>
+                                Feel like writing a note to someone else?<button class="w3-button w3-blue" ng-click="helpRandomUser()">Press here to retry!</button>
+                            </div>
+                            <div ng-show='!showbox'>
+                                Everyone's feeling fine today! Please drop by again later; we'll need your help. Thank you <span class="glyphicon glyphicon-heart">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Thank you popup (after a user sends a note to another user) -->
+                <div id="thankyou" class="w3-modal" onclick="this.style.display='none'">
+                    <div class="w3-modal-content">
+                        <header class="w3-container">
+                            <span onclick="document.getElementById('helpsomeone').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                        </header>
+                        <div class="w3-container w3-padding-16">
+                            Your note has been sent. Thank you <span class="glyphicon glyphicon-heart">
+                        </div>
+                    </div>
+                </div>
+        </div><br><br>
+
+        <!-- Postsfeed, login/registration page, etc. All the rest. -->
+        <div class="w3-container w3-main" id="mainContent">
+            <button class="w3-button w3-hide-large w3-right w3-text-blue" onclick="w3_open()" id="toggleOn"><i class="glyphicon glyphicon-chevron-left"></i></button>
+            <ui-view></ui-view>
+        </div>
+    </div>
+
+<!-- 'home' template *******************************************************-->
+
+<!-- home.html -->
+    <script type="text/ng-template" id="/home.html">
+
+    <div ng-hide="isLoggedIn()">
+      <span class="post-title">Please <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> to post.</span><br><br>
+    </div>
+
+    <div class="w3-padding-16">
+        <div class="w3-row-padding">
+            <div class="w3-container w3-half">
+                <div class="w3-bar w3-xlarge">
+                    <div style="float:left;clear:both;margin-left:10px;">
+                    <a class="w3-bar-item w3-button w3-bottombar {{active_h}}" ng-click="tab('happy')"><i class="twa twa-smile"></i></a>
+                    <a class="w3-bar-item w3-button w3-bottombar {{active_s}}" ng-click="tab('sad')"><i class="twa twa-cry"></i></a>
+                    <a class="w3-bar-item w3-button w3-bottombar {{active_a}}" ng-click="tab('angry')"><i class="twa twa-triumph"></i></a>
+                    <a class="w3-bar-item w3-button w3-bottombar {{active_all}}" ng-click="tab('all')" style="font-size:21px;">All</a>
+                    </div>
+                    <div style="float:left;clear:both;margin-bottom:15px;margin-left:10px;">
+                    <a class="w3-bar-item w3-button w3-right w3-bottombar {{active_hot}}" ng-click="toggle('hot')"><i class="twa twa-fire"></i></a>
+                    <a class="w3-bar-item w3-button w3-right w3-bottombar {{active_new}}" ng-click="toggle('new')"><i class="twa twa-clock1"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="w3-container w3-rest" style="margin-top:10px;">
+                <div class="w3-bar w3-padding-big">
+                    <div>
+                    <a class="w3-bar-item w3-button w3-right w3-blue" style="height:34px;" onclick="document.getElementById('write').style.display='block'" ng-hide="!isLoggedIn() || !isInFilter()"><i class="glyphicon glyphicon-pencil"></i>  Write Post</a>
+                    </div>
+                    <div class="input-group" style="z-index:1; padding-right: 20px">
+                        <input type="text" class="form-control" placeholder="Search for...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-secondary" type="button"><i class="glyphicon glyphicon-search w3-text-white"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Write post popup -->
+    <div id="write" class="w3-modal">
+        <div class="w3-modal-content">
+            <header class="w3-container">
+            <span onclick="document.getElementById('write').style.display='none'"
+            class="w3-button w3-display-topright">&times;</span>
+            </header>
+            <div class="w3-container w3-padding-32">
+                <form class="w3-container w3-padding-16" ng-submit="addPost()">
+                    <div class="w3-mobile">
+                        <textarea class="w3-input w3-border" ng-attr-placeholder="{{placeholder}}" ng-model="title" id="form-title" required></textarea>
+                    </div>
+                    <div class="w3-mobile">
+                        <input type="text" id="urlInput" class="w3-input w3-border" placeholder="(Optional) Image link must start with http(s)://" ng-model="imagelink" oninput="readURL(this.value)">
+                    </div>
+                    <div class="w3-mobile">
+                        <button type="submit" class="w3-button w3-blue w3-border w3-border-blue w3-block">Post</button>
+                    </div>
+                </form>
+                <div style="margin-left:15px;">
+                    <p id="previewImgText"></p>
+                    <img class="user-images" src="" id="previewImg">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display posts -->
+    <!-- NOTE: still scrolling too much? http://stackoverflow.com/questions/23666712/nginfinitescroll-loadmore-method-gets-called-on-every-mouse-scroll -->
+    <!--<div infinite-scroll="loadMore()" infinite-scroll-use-document-bottom=true>-->
+    <div>
+        <div class="w3-container" ng-repeat="post in posts | filter: filters | orderBy: orders">
+            <div ng-if="post.deleted==false" class="w3-panel w3-white w3-border post">
+                <div><br>
+                    <div align="center"><img class="user-images w3-hover-opacity" ng-attr-src="{{post.imagelink}}" ng-click="expandImg(post.title, post.imagelink)"><br><hr ng-if="post.imagelink"></div>
+                    <a href="#/posts/{{post._id}}"><span class="post-title">
+                    {{post.title}}
+                    </span></a><br><br>
+                </div>
+                    <ul class="w3-right post-buttons">
+                        <li class="w3-hide-small" style="font-size:15px;">{{post.date | date:'MMM dd hh:mm a'}}</li>
+                        <li class="w3-hide-large w3-hide-medium" style="font-size:15px;">{{post.date | date:'MM/dd hh:mm a'}}<br></li>
+                        <li ng-if="post.upvoted"><span class="glyphicon glyphicon-heart w3-text-red" ng-click="incrementUpvotes(post)"></span>
+                        {{post.upvotes}}</li>
+                        <li ng-if="!post.upvoted"><span class="glyphicon glyphicon-heart w3-text-light-gray" ng-click="incrementUpvotes(post)"></span>
+                        {{post.upvotes}}</li>
+                        <li ng-if="post.flagged"><span class="glyphicon glyphicon-flag w3-text-dark-gray" ng-click="incrementFlags(post)"></span>
+                        {{post.flags}}</li>
+                        <li ng-if="!post.flagged"><span class="glyphicon glyphicon-flag w3-text-light-gray" ng-click="incrementFlags(post)"></span>
+                        {{post.flags}}</li>
+                        <li><a href="#/posts/{{post._id}}"><span class="glyphicon glyphicon-comment w3-text-blue"></span></a>
+                            {{post.comments.length}}</li>
+                        <li ng-if="post.authorid===currentUserId()"><span class="glyphicon glyphicon-trash w3-text-gray" ng-click="deleteCheck(post)"></span></li>
+
+                        <!-- Delete popup (modal) -->
+                        <div id="delcheck" class="w3-modal w3-animate-opacity">
+                            <div class="w3-modal-content">
+                                <div class="w3-container w3-center w3-padding-large">
+                                    <p class="post-body">Are you sure you want to delete your post? </p>
+                                    <br>
+                                    <span class="glyphicon glyphicon-ok-circle w3-text-green w3-xxlarge" ng-click="deletePost(curPost)" onclick="document.getElementById('delcheck').style.display='none'"></span>
+                                    <span class="glyphicon glyphicon-remove-circle w3-text-red w3-xxlarge" onclick="document.getElementById('delcheck').style.display='none'"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+
+                <!-- Image expand popup -->
+                <div id="imgExpand" class="w3-modal w3-animate-opacity" ng-click="unexpandImg()">
+                    <div class="w3-container w3-center">
+                        <img class="w3-modal-content user-images-expanded" ng-attr-src="{{imagelink}}">
+                        <!--<p style="background-color:white;" class="w3-modal-content w3-padding-small post-body">{{title}}</p>-->
+                    </div>
+                </div>
+          </div>
+      </div>
+  </script>
+
+<!-- 'posts' template ******************************************************-->
+
+<!-- posts.html -->
+    <script type="text/ng-template" id="/posts.html">
+
+        <!-- Header -->
+        <div>
+            <a ng-click="goBack()">
+                <div><span class="glyphicon glyphicon-arrow-left"></span> Back</div><br>
+            </a>
+            <div class="w3-panel w3-white w3-border post">
+                <div align="center" style="margin-top:10px;"><img class="user-images w3-hover-opacity" ng-attr-src="{{post.imagelink}}" ng-click="expandImg(post.title, post.imagelink)"><br><hr ng-if="post.imagelink"></div>
+                <div><br><span class="post-title">{{post.title}}</span></div>
+                <ul class="w3-right post-buttons">
+                    <li class="w3-hide-small" style="font-size:15px;">{{post.date | date:'MMM dd hh:mm a'}}</li>
+                    <li class="w3-hide-large w3-hide-medium" style="font-size:15px;">{{post.date | date:'MM/dd hh:mm a'}}<br></li>
+                    <li ng-if="post.upvoted"><span class="glyphicon glyphicon-heart w3-text-red" ng-click="incrementUpvotesPost()"></span>
+                    {{post.upvotes}}</li>
+                    <li ng-if="!post.upvoted"><span class="glyphicon glyphicon-heart w3-text-light-gray" ng-click="incrementUpvotesPost()"></span>
+                    {{post.upvotes}}</li>
+                    <li ng-if="post.flagged"><span class="glyphicon glyphicon-flag w3-text-dark-gray" ng-click="incrementFlagsPost()"></span>
+                    {{post.flags}}</li>
+                    <li ng-if="!post.flagged"><span class="glyphicon glyphicon-flag w3-text-light-gray" ng-click="incrementFlagsPost()"></span>
+                    {{post.flags}}</li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+
+        <!-- Display comments -->
+        <span class="post-body">Comments:</span><br><br>
+        <div ng-repeat="comment in post.comments | orderBy:'-date'">
+            <span>
+              <div ng-if="comment.deleted==false" class="w3-panel w3-white w3-border comment w3-padding-small">
+                                    {{comment.body}}<br>
+                <ul class="w3-right post-buttons">
+                    <li ng-if="comment.upvoted"><span class="glyphicon glyphicon-heart w3-text-red" ng-click="incrementUpvotes(comment)"></span>
+                    {{comment.upvotes}}</li>
+                    <li ng-if="!comment.upvoted"><span class="glyphicon glyphicon-heart w3-text-light-gray" ng-click="incrementUpvotes(comment)"></span>
+                    {{comment.upvotes}}</li>
+                    <li ng-if="comment.flagged"><span class="glyphicon glyphicon-flag w3-text-dark-gray" ng-click="incrementFlags(comment)"></span>
+                    {{comment.flags}}</li>
+                    <li ng-if="!comment.flagged"><span class="glyphicon glyphicon-flag w3-text-light-gray" ng-click="incrementFlags(comment)"></span>
+                    {{comment.flags}}</li>
+                    <li ng-if="comment.authorid===currentUserId()">
+                        <span class="glyphicon glyphicon-trash w3-text-gray" ng-click="deleteComCheck(comment)">
+                        </span>
+                    </li>
+                    <!-- Delete popup (modal) -->
+                    <div id="delcomcheck" class="w3-modal w3-animate-opacity">
+                        <div class="w3-modal-content">
+                            <header class="w3-container">
+                            <span onclick="document.getElementById('delcomcheck').style.display='none'"
+                            class="w3-button w3-display-topright">&times;</span>
+                            </header>
+                            <div class="w3-container w3-center w3-padding-large">
+                                <p class="post-body">Delete comment?
+                                <br>
+                                <span class="glyphicon glyphicon-ok-circle w3-text-green w3-xxlarge" ng-click="deleteComment(curComment)" onclick="document.getElementById('delcomcheck').style.display='none'"></span>
+                                <span class="glyphicon glyphicon-remove-circle w3-text-red w3-xxlarge" onclick="document.getElementById('delcomcheck').style.display='none'"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    </ul>
+              </div>
+            </span>
+        </div><br>
+
+        <!-- Section to add a new comment -->
+        <form class="w3-container" ng-hide="!isLoggedIn()" ng-submit="addComment()">
+            <div class="w3-threequarter">
+                <input class="w3-input w3-border" placeholder="Add a new comment" ng-model="body"></textarea>
+            </div>
+            <div class="w3-quarter">
+                <button type="submit" class="w3-button w3-blue w3-border w3-border-blue w3-block">Post</button>
+            </div>
+        </form>
+        <div class="w3-container" ng-hide="isLoggedIn()">
+           <span class="post-title">You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can comment.</span>
+        </div>
+
+        <!-- Image expand popup -->
+        <div id="imgExpand" class="w3-modal w3-animate-opacity" ng-click="unexpandImg()">
+            <div class="w3-container w3-center">
+                <img class="w3-modal-content user-images-expanded" ng-attr-src="{{imagelink}}">
+                <!--<p class="w3-modal-content w3-padding-small post-body">{{title}}</p>-->
+            </div>
+        </div>
+    </script>
+
+<!-- 'register' template ***************************************************-->
+
+<!-- register.html -->
+    <script type="text/ng-template" id="/register.html">
+
+        <!-- Error message -->
+        <div ng-show="error" class="w3-panel w3-pale-red">
+            <span>{{ error.message }}</span>
+        </div>
+
+        <!-- Registration form with validator -->
+        <div class="w3-padding-16"><span class="title">Register</span></div>
+       <form data-toggle="validator" role="form" ng-submit="register()">
+           <div class="form-group">
+               <label for="inputName" class="w3-text-blue">Username</label>
+               <input type="text" class="w3-input w3-border" id="inputName" placeholder="Username" ng-model="user.username" required>
+           </div>
+           <!-- For phone verification -->
+           <div class="form-group has-feedback">
+               <label for="inputTwitter" class="w3-text-blue">Phone Number</label>
+               <div class="input-group" id="phoneform">
+                   <span class="input-group-addon">+1</span>
+                   <input type="text" class="w3-input w3-border" placeholder="Phone number" name="phoneNumber" ng-model="user.phonenum" required>
+               </div>
+               <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+           </div>
+           <!-- For email verification (ditched) -->
+           <!-- <div class="form-group has-feedback">
+               <label for="inputTwitter" class="control-label">Princeton Email</label>
+               <div class="input-group">
+                   <input type="text" class="form-control" placeholder="Netid" ng-model="user.netid" required>
+                   <span class="input-group-addon">@</span>
+                   <input type="text" class="form-control" placeholder="Anything in-between (if any)" ng-model="user.optional">
+                   <span class="input-group-addon">princeton.edu</span>
+               </div>
+               <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+           </div> -->
+           <div class="form-group">
+               <label for="inputPassword" class="w3-text-blue">Choose a password</label>
+               <div class="form-inline row">
+                 <div class="form-group col-sm-6">
+                   <input type="password" data-minlength="1" class="w3-input w3-border" id="inputPassword" placeholder="Password" ng-model="user.password" required>
+                   <div class="help-block">Minimum of 1 characters</div>
+                 </div>
+               </div>
+             </div>
+             <div class="form-group">
+                <div class="w3-padding-16">
+                    <span class="post-body" style="margin-left:0px;">By signing up, you agree to our <a onclick="document.getElementById('terms').style.display='block'">Terms and Conditions</a>
+                        and <a onclick="document.getElementById('privacy').style.display='block'">Privacy Policy</a>.</span><br>
+                </div>
+                <button type="submit" class="w3-button w3-blue">Sign me up!</button>
+             </div>
+           </form>
+
+            <!-- Terms and Conditions -->
+            <div id="terms" class="w3-modal" onclick="this.style.display='none'">
+                <div class="w3-modal-content">
+                    <header class="w3-container">
+                    <span onclick="document.getElementById('terms').style.display='none'"
+                    class="w3-button w3-display-topright">&times;</span>
+                    </header>
+                    <div class="w3-container w3-padding-16">
+                        <p class="post-title">Terms and Conditions</p>
+                        <p class="post-body">Last updated: April 9, 2017</p>
+                        <p class="post-body">Please read these Terms and Conditions carefully before using the Service operated by Mooody.
+                            Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms and Conditions.
+                            These Terms and Conditions apply to all visitors, users and others who access or use the Service.
+                            By accessing or using the Service you agree to be bound by these Terms and Conditions.
+                            If you disagree with any part of the terms then you may not access the Service.</p>
+                        <br>
+                        <p class="post-body"><span class="w3-tag w3-blue">Content</span> Our Service allows you to post, store, share and
+                            otherwise make available certain information, text, or other material. You are solely responsible for the
+                            content, postings, and conduct made under your account. You accept full, sole risk for your use of these services.
+                            Mooody and its developers shall not be liable to you for any damages whatsoever. You agree to not upload content that:
+                            <ul>
+                                <li>May constitute or contribute to a crime</li>
+                                <li>Contains information or content which is illegal</li>
+                                <li>Is pornographic, harmful or dangerous, encourages acts of violence, hateful content, threats, or reveals other’s personal information</li>
+                            </ul></p>
+                        <p class="post-body"><span class="w3-tag w3-blue">Changes</span> We reserve the right, at our sole discretion, to modify or replace these Terms and Conditionsat any time.
+                            If a revision is material we will try to provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined
+                            at our sole discretion.</p>
+                        <p class="post-body"><span class="w3-tag w3-blue">Termination</span> We may terminate, suspend, or ban accounts and/or access to our Services immediately, without
+                            prior notice or liability to Mooody or its developers, for any reason whatsoever, including breach of Terms and Conditions.</p>
+                        <p class="post-body"><span class="w3-tag w3-blue">Conact Us</span> If you have any questions about these Terms and Conditions, please <a href="mailto:xyyu@princeton.edu">contact</a> us.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Policy -->
+            <div id="privacy" class="w3-modal" onclick="this.style.display='none'">
+                <div class="w3-modal-content">
+                    <header class="w3-container">
+                    <span onclick="document.getElementById('privacy').style.display='none'"
+                    class="w3-button w3-display-topright">&times;</span>
+                    </header>
+                    <div class="w3-container w3-padding-16">
+                        <p class="post-title">Privacy Policy</p>
+                        <p class="post-body">Last updated: April 9, 2017</p>
+                        <p class="post-body">Not added yet</p>
+                        <p class="post-body"><span class="w3-tag w3-blue">Content</span> Not added yet</p>
+                    </div>
+                </div>
+            </div>
+    </script>
+
+<!-- 'login' template ******************************************************-->
+
+<!-- login.html -->
+    <script type="text/ng-template" id="/login.html">
+
+        <!-- Error message -->
+        <div ng-show="error" class="w3-panel w3-pale-red">
+            <span>{{ error.message }}</span>
+        </div>
+
+        <!-- Login form with validator -->
+        <div class="w3-padding-16"><span class="title">Log In</span></div>
+        <form data-toggle="validator" role="form" ng-submit="logIn()">
+            <div class="form-group">
+                <label for="inputName" class="w3-text-blue">Username</label>
+                <input type="text" class="w3-input w3-border" id="inputName" placeholder="Username" ng-model="user.username">
+            </div>
+            <div class="form-group">
+                <label for="inputPassword" class="w3-text-blue">Password</label>
+                <div class="form-inline row">
+                  <div class="form-group col-sm-6">
+                    <input type="password" class="w3-input w3-border" id="inputPassword" placeholder="Password" ng-model="user.password" required>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="w3-button w3-blue">Log In</button>
+              </div>
+            </form>
+
+        <a class="w3-button" href="/#/register">Don't have an account? Click here to register.</a><br>
+        <a class="w3-button" href="/#/verify">Click here to activate your account.</a>
+    </script>
+
+<!-- 'verify' template *****************************************************-->
+
+<!-- verify.html -->
+    <script type="text/ng-template" id="/verify.html">
+
+        <!-- Status message -->
+        <div ng-show="error" class="w3-panel w3-pale-red">
+            <span>{{ error.failmessage }}</span>
+        </div>
+        <div ng-show="success" class="w3-panel w3-pale-green">
+            <span>{{ success.successmessage }}</span>
+        </div>
+
+        <div class="w3-padding-16"><span class="title">Enter your 6-character verification code below.</span></div>
+        <form data-toggle="validator" role="form" ng-submit="verifyNow()">
+            <div class="form-group">
+                <label for="inputName" class="w3-text-blue">Code (case sensitive)</label>
+                <input type="text" class="w3-input w3-border" id="inputName" placeholder="Code" ng-model="code" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="w3-button w3-blue">Activate your account!</button>
+            </div>
+        </form>
+        <!--{{code}}-->
+    </script>
+
+<!-- 'mymessages' template *************************************************-->
+
+<!-- mymessages.html -->
+    <script type="text/ng-template" id="/mymessages.html">
+        <a href="#">
+            <div><span class="glyphicon glyphicon-arrow-left"></span> Back</div><br>
+        </a>
+
+        Your Messages<br><hr>
+
+        <!-- Display notes -->
+        <div ng-show="!notesEmpty">
+            <div class="w3-container" ng-repeat="note in notes | orderBy: 'created_at':true">
+                <div class="w3-panel w3-white w3-border post">
+                    {{note.body}}
+                </div>
+            </div>
+        </div>
+        <div ng-show="notesEmpty">
+            Nothing to show here.
+        </div>
+    </script>
+</div>
+
+<!-- Body end **************************************************************-->
+</body>
+</html>
+
+<!-- NOTE: Emoji support from http://ellekasai.github.io/twemoji-awesome/ -->
+<!-- NOTE: MEAN stack tutorial from https://thinkster.io/tutorials/mean-stack -->
